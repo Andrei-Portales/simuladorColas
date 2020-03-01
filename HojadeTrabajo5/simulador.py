@@ -15,7 +15,7 @@ for proceso in procesosEjecutar:
     
     # variables dinamicas
     cantidaddeProcesos = proceso
-    numProcesos = 3
+    numProcesos = 1
     numRam = 100
 
     # variables de simulador
@@ -25,6 +25,7 @@ for proceso in procesosEjecutar:
     env = simpy.Environment()
     RAM = simpy.Container(env, init=numRam, capacity=numRam)
     CPU = simpy.Resource(env, capacity=numProcesos)
+    CPU2 = simpy.Resource(env, capacity=numProcesos)
 
 
     # funcion que simula un proceso
@@ -46,9 +47,25 @@ for proceso in procesosEjecutar:
         tiempos.append(tiempoProceso)
         print(name, "se tardo", tiempoProceso)
 
+    jj = abs(int ((proceso / 2)) - proceso / 2)
     
-    for i in range(cantidaddeProcesos):
-        env.process(process("Proceso" + str(i + 1), random.expovariate(1.0 / 10), env, CPU, RAM))
+    j1 = 0
+    j2 = 0
+    
+    if jj > 0:
+        j1 = abs((proceso / 2) + 0.5)
+        j2 = abs(proceso - j1)
+    else:
+        j1 = abs(proceso / 2)
+        j2 = abs(proceso - j1)
+    
+    
+    for i in range(int(j1)):
+        env.process(process("Proceso" + str(i + 1) + "-1", random.expovariate(1.0 / 10), env, CPU, RAM))
+    for ii in range(int(j2)):
+        env.process(process("Proceso" + str(ii + 1) + "-2", random.expovariate(1.0 / 10), env, CPU2, RAM))
+        
+    
         
 
     env.run(until=cantidaddeProcesos * 10)
