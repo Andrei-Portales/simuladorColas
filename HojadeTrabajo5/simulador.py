@@ -26,6 +26,7 @@ for proceso in procesosEjecutar:
     RAM = simpy.Container(env, init=numRam, capacity=numRam)
     CPU = simpy.Resource(env, capacity=numProcesos)
     CPU2 = simpy.Resource(env, capacity=numProcesos)
+    
 
 
     # funcion que simula un proceso
@@ -34,7 +35,14 @@ for proceso in procesosEjecutar:
         yield environment.timeout(tiempoEspera)
         tiempoInicio = environment.now
         memoriaUtilizar = random.randint(1, 10)
+        
+        sss = True
+        while  sss:
+            if (memoriaUtilizar <= ram.level):
+                sss = False
+        
         ram.get(memoriaUtilizar)
+        
         cantidadProcesos = random.randint(1, 10)
         print(name, "se almaceno en la memoria en", tiempoInicio, "y tiene", cantidadProcesos, "procesos")
 
