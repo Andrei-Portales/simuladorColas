@@ -15,7 +15,7 @@ for proceso in procesosEjecutar:
     
     # variables dinamicas
     cantidaddeProcesos = proceso
-    numProcesos = 1
+    numProcesos = 3
     numRam = 100
 
     # variables de simulador
@@ -26,7 +26,6 @@ for proceso in procesosEjecutar:
     RAM = simpy.Container(env, init=numRam, capacity=numRam)
     CPU = simpy.Resource(env, capacity=numProcesos)
     CPU2 = simpy.Resource(env, capacity=numProcesos)
-    
 
 
     # funcion que simula un proceso
@@ -35,14 +34,9 @@ for proceso in procesosEjecutar:
         yield environment.timeout(tiempoEspera)
         tiempoInicio = environment.now
         memoriaUtilizar = random.randint(1, 10)
-        
-        sss = True
-        while  sss:
-            if (memoriaUtilizar <= ram.level):
-                sss = False
-        
+        if (memoriaUtilizar > ram.level):
+             yield environment.timeout(5)
         ram.get(memoriaUtilizar)
-        
         cantidadProcesos = random.randint(1, 10)
         print(name, "se almaceno en la memoria en", tiempoInicio, "y tiene", cantidadProcesos, "procesos")
 
@@ -55,23 +49,23 @@ for proceso in procesosEjecutar:
         tiempos.append(tiempoProceso)
         print(name, "se tardo", tiempoProceso)
 
-    jj = abs(int ((proceso / 2)) - proceso / 2)
+#     jj = abs(int ((proceso / 2)) - proceso / 2)
+#     
+#     j1 = 0
+#     j2 = 0
+#     
+#     if jj > 0:
+#         j1 = abs((proceso / 2) + 0.5)
+#         j2 = abs(proceso - j1)
+#     else:
+#         j1 = abs(proceso / 2)
+#         j2 = abs(proceso - j1)
+#     
     
-    j1 = 0
-    j2 = 0
-    
-    if jj > 0:
-        j1 = abs((proceso / 2) + 0.5)
-        j2 = abs(proceso - j1)
-    else:
-        j1 = abs(proceso / 2)
-        j2 = abs(proceso - j1)
-    
-    
-    for i in range(int(j1)):
+    for i in range(proceso):
         env.process(process("Proceso" + str(i + 1) + "-1", random.expovariate(1.0 / 10), env, CPU, RAM))
-    for ii in range(int(j2)):
-        env.process(process("Proceso" + str(ii + 1) + "-2", random.expovariate(1.0 / 10), env, CPU2, RAM))
+    #for ii in range(int(j2)):
+        #env.process(process("Proceso" + str(ii + 1) + "-2", random.expovariate(1.0 / 10), env, CPU2, RAM))
         
     
         
@@ -89,5 +83,5 @@ def grafica(x,y):
     plt.ylabel('Tiempo Promedio')
     plt.title('Graficas de Simulador de Procesos')
     plt.show()
-
-grafica(procesosEjecutar,tiempoTotales)
+    
+grafica(procesosEjecutar, tiempoTotales)
